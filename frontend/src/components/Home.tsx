@@ -1,7 +1,6 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import { WalletSDK } from "@roninnetwork/wallet-sdk";
-import { ethers } from "ethers";
+import axios from "axios";
 // import { Web3Provider } from "@ethersproject/providers";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -10,11 +9,38 @@ import { CardMedia, Typography } from "@mui/material";
 // import { ExternallyOwnedAccount } from "@ethersproject/abstract-signer";
 
 export default function Home() {
-  const [userWalletAddress, setUserWalletAddress] = useState("");
+  // const [userWalletAddress, setUserWalletAddress] = useState("");
+  const [userWalletAddress, setUserWalletAddress] = useState(
+    localStorage.getItem("userWalletAddress") || ""
+  );
+  const [totalDonationValue, setTotalDonationValue] = useState(0);
 
-  // const provider = new ethers.providers.JsonRpcProvider(
-  //   "https://saigon-testnet.roninchain.com/rpc"
-  // ); // using testnet change to mainnet
+  const config = {
+    method: "get",
+    maxBodyLength: Infinity,
+    url: "https://api-gateway.skymavis.com/skynet/ronin/accounts/0x60f642408a5e661da0489081f2951d046769ca6f",
+    headers: {
+      Accept: "application/json",
+      "X-API-KEY": process.env.REACT_APP_X_API_KEY,
+    },
+  };
+
+  const calcTotalDonationValue = () => {
+    return axios(config)
+      .then((response: { data: any }) => {
+        console.log(response.data.result);
+        console.log(JSON.stringify(response.data.result.ronNetWorth));
+        setTotalDonationValue(response.data.result.ronNetWorth);
+        return response.data.balance; // return the balance value
+      })
+      .catch((error: any) => {
+        console.log(error);
+        throw error; // re-throw the error to be handled by the caller
+      });
+  };
+
+  // need to make this a useEffect
+  calcTotalDonationValue();
 
   const checkRoninInstalled = () => {
     if ("ronin" in window) {
@@ -31,6 +57,7 @@ export default function Home() {
     ) => {
       console.log("Account is changed to: ", newAddresses[0]);
       setUserWalletAddress(newAddresses[0]);
+      localStorage.setItem("userWalletAddress", newAddresses[0] as string);
     };
 
     window.ronin!.provider.addListener(
@@ -47,12 +74,7 @@ export default function Home() {
     };
   }, []);
 
-  // remove
-  console.log("user wallet", "1" + userWalletAddress + "1");
-
   const handleConnectWallet = async () => {
-    // const sdk = new WalletSDK(); // make sure this is run first before connectInjected
-
     // check if ronin extension is installed
     const isInstalled = checkRoninInstalled();
     if (isInstalled === false) {
@@ -60,15 +82,20 @@ export default function Home() {
     }
 
     if (userWalletAddress) {
+      console.log("connected user wallet address", userWalletAddress);
       console.log("Wallet is already connected"); // make this into a modal
+    } else if (userWalletAddress === undefined) {
+      console.log("Log in to your Ronin Account through the extension"); // make this into a modal
     } else {
-      const sdk = new WalletSDK(); // make sure this is run first before connectInjected
+      const sdk = new WalletSDK();
       await sdk.connectInjected();
 
       const accounts = await sdk.requestAccounts();
       if (accounts) {
         console.log(`Wallet Connected! Current address: ${accounts[0]}`);
         setUserWalletAddress(accounts[0]);
+        // Also save the new userWalletAddress in localStorage
+        localStorage.setItem("userWalletAddress", accounts[0]);
         console.log("connected");
       } else {
         console.log("Failed to connect to the wallet");
@@ -77,6 +104,8 @@ export default function Home() {
   };
 
   const handleDonate = async () => {
+    console.log(userWalletAddress);
+    //^remove this after
     try {
       const valueInWei = (0.00001 * 10 ** 18).toString(16);
       await window.ronin!.provider.request({
@@ -97,49 +126,6 @@ export default function Home() {
     }
   };
 
-  // // DON'T SHARE THIS WITH ANYONE
-  // const privateKey = "test";
-  // const toAddress = "0x8f11877d6181484568b93b30039f5418f787c61c";
-  // const amount = "0.1";
-
-  // const handleDonate = async (
-  //   privateKey:
-  //     | ethers.utils.BytesLike
-  //     | ExternallyOwnedAccount
-  //     | ethers.utils.SigningKey,
-  //   toAddress: string,
-  //   amount: string
-  // ) => {
-  //   // Create a wallet from the private key
-  //   const wallet = new ethers.Wallet(privateKey, provider);
-
-  //   // Convert amount to Wei
-  //   const weiAmount = ethers.utils.parseEther(amount);
-
-  //   // Create a transaction object
-  //   const transaction = {
-  //     to: toAddress,
-  //     value: weiAmount,
-  //   };
-
-  //   // Sign and send the transaction
-  //   const transactionResponse = await wallet.sendTransaction(transaction);
-  //   console.log(transactionResponse);
-
-  //   // Wait for the transaction to be confirmed
-  //   await transactionResponse.wait();
-
-  //   // Verify the balance after the transaction
-  //   const balance = await provider.getBalance(wallet.address);
-  //   console.log(
-  //     "Balance after sending RON:",
-  //     ethers.utils.formatEther(balance),
-  //     "RON"
-  //   );
-
-  //   console.log("Donated");
-  // };
-
   return (
     <Container maxWidth="sm">
       <Box
@@ -159,6 +145,9 @@ export default function Home() {
           height="200" // Adjust the height as needed
           image="../assets/axie_1.png" // path to your image
         />
+        <Typography variant="h5" gutterBottom>
+          Total Donated Value: {totalDonationValue.toFixed(5)} RON
+        </Typography>
         <Button
           variant="contained"
           color="primary"
@@ -173,9 +162,6 @@ export default function Home() {
           variant="contained"
           color="primary"
           onClick={handleDonate}
-          // onClick={() =>
-          //   handleDonate(privateKey, toAddress, amount).catch(console.error)
-          // }
           fullWidth
           size="large"
           style={{ borderRadius: "25px" }}
