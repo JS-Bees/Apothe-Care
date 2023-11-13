@@ -5,7 +5,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { CardMedia, Typography } from "@mui/material";
+import { CardMedia, TextField, Typography } from "@mui/material";
 // import { ExternallyOwnedAccount } from "@ethersproject/abstract-signer";
 
 export default function Home() {
@@ -14,6 +14,8 @@ export default function Home() {
     sessionStorage.getItem("userWalletAddress") || undefined
   );
   const [totalDonationValue, setTotalDonationValue] = useState(0);
+  const [donationAmount, setDonationAmount] = useState(""); // New state for donation amount
+
 
   const config = {
     method: "get",
@@ -143,7 +145,7 @@ export default function Home() {
       // I want it to automatically open the ronin wallet window here
     } else {
       try {
-        const valueInWei = (0.00001 * 10 ** 18).toString(16);
+        const valueInWei = (parseFloat(donationAmount) * 10 ** 18).toString(16);
         await window.ronin!.provider.request({
           method: "eth_sendTransaction",
           params: [
@@ -195,6 +197,15 @@ export default function Home() {
         >
           Connect Wallet
         </Button>
+        <TextField
+          label="Donation Amount"
+          variant="outlined"
+          fullWidth
+          type="number"
+          value={donationAmount}
+          onChange={(e) => setDonationAmount(e.target.value)}
+          style={{ marginBottom: "20px" }}
+        />
         <Button
           variant="contained"
           color="primary"
@@ -203,6 +214,7 @@ export default function Home() {
           size="large"
           style={{ borderRadius: "25px" }}
         >
+          
           Donate
         </Button>
       </Box>
