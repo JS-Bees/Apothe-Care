@@ -4,7 +4,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { CardMedia, Typography } from "@mui/material";
+import { CardMedia, Typography, Modal, Input, TextField } from "@mui/material";
 import ResponsiveAppBar from "./NavigationBar";
 
 export default function Home() {
@@ -13,6 +13,13 @@ export default function Home() {
   );
   const [totalDonationValue, setTotalDonationValue] = useState(0);
   const [top5Donors, setTop5Donors] = useState({});
+
+  // State for the modal
+  const [open, setOpen] = useState(false);
+  // State for the donation value
+  const [donationAmount, setDonationAmount] = useState(0);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const donationAddress = "0x8f11877d6181484568b93b30039f5418f787c61c";
 
@@ -169,27 +176,34 @@ export default function Home() {
     }
   };
 
+  const addDonationAmount = async () => {
+    handleClose();
+    try {
+      const valueInWei = (donationAmount * 10 ** 18).toString(16);
+      await window.ronin!.provider.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            to: "0x8f11877d6181484568b93b30039f5418f787c61c",
+            from: userWalletAddress,
+            // value: "0xDE0B6B3A7640000", // 1000000000000000000, 1 RON
+            value: "0x" + valueInWei, // 0.00001 RON
+            gas: "0x5208",
+            data: "",
+          },
+        ],
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleDonate = async () => {
     if (userWalletAddress === undefined) {
       console.log("Log in to your Ronin Account through the extension");
       connectRoninWallet();
     } else {
-      try {
-        await window.ronin!.provider.request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              to: donationAddress,
-              from: userWalletAddress,
-              value: "0xDE0B6B3A7640000", // 1000000000000000000, 1 RON
-              gas: "0x5208",
-              data: "",
-            },
-          ],
-        });
-      } catch (error) {
-        console.error(error);
-      }
+      handleOpen();
     }
   };
 
@@ -203,8 +217,8 @@ export default function Home() {
         minHeight="100vh"
         paddingY={4}
       >
-          <ResponsiveAppBar />
-        
+        <ResponsiveAppBar />
+
         <CardMedia
           component="img"
           alt="Apothe-Care Logo"
@@ -242,6 +256,60 @@ export default function Home() {
           Donate
         </Button>
       </Box>
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: "white",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            padding: "20px",
+            width: "300px",
+            height: "300px",
+          }}
+        >
+          <Typography id="simple-modal-title" variant="h6" component="h2">
+            Donation Value
+          </Typography>
+          {/* <Input
+            type="number"
+            value={donationValue}
+            onChange={(event) => {
+              const value = event.target.value;
+              if (!value || value.match(/^\d*(\.\d{0,15})?$/)) {
+                setDonationValue(Number(value));
+              }
+            }}
+          /> */}
+          <TextField
+            label="Donation Amount"
+            variant="outlined"
+            fullWidth
+            type="number"
+            value={donationAmount}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+              if (value < 0) {
+                setDonationAmount(0);
+              } else {
+                setDonationAmount(value);
+              }
+            }}
+            style={{ marginBottom: "20px" }}
+          />
+          <Button onClick={addDonationAmount}>Confirm Donation Amount</Button>
+          <Button onClick={handleClose}>Close</Button>
+        </Box>
+      </Modal>
     </Container>
   );
 }
