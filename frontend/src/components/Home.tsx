@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import { CardMedia, Typography } from "@mui/material";
+import ResponsiveAppBar from "./NavigationBar";
 
 export default function Home() {
   const [userWalletAddress, setUserWalletAddress] = useState(
@@ -202,9 +203,8 @@ export default function Home() {
         minHeight="100vh"
         paddingY={4}
       >
-        <Typography variant="h2" gutterBottom>
-          Apothe-Care
-        </Typography>
+          <ResponsiveAppBar />
+        
         <CardMedia
           component="img"
           alt="Apothe-Care Logo"
