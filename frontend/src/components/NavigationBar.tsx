@@ -11,8 +11,6 @@ import Button from "@mui/material/Button";
 import AdbIcon from "@mui/icons-material/Adb";
 import { BrowserRouter as Router, Link } from "react-router-dom";
 
-const pages = ["About", "TopDonor"];
-
 function ResponsiveAppBar() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
@@ -75,14 +73,6 @@ function ResponsiveAppBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page, index) => (
-                  <Link
-                    to={`/${page.toLowerCase().replace(" ", "")}`}
-                    key={index}
-                  >
-                    <Typography textAlign="center">{page}</Typography>
-                  </Link>
-                ))}
               </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -102,21 +92,6 @@ function ResponsiveAppBar() {
                 textDecoration: "none",
               }}
             ></Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {pages.map((page, index) => (
-                <Link
-                  to={`/${page.toLowerCase().replace(" ", "")}`}
-                  key={index}
-                >
-                  <Button
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    {page}
-                  </Button>
-                </Link>
-              ))}
-            </Box>
           </Toolbar>
         </Container>
       </AppBar>

@@ -1,127 +1,39 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
+import React from 'react';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Top Donations','Home'];
+const BriefDescriptionBox = () => (
+  <Box
+    style={{
+      marginTop: '50px',
+      border: '1px solid #ccc',
+      borderRadius: '10px',
+      padding: '10px',
+      width: '25%',
+      maxHeight: '300px',
+      overflowY: 'auto',
+      position: 'absolute',
+      top: '20px',
+      left: '10px', // Set the left position to move it to the left side
+      backgroundColor: 'white', // Set the background color to white
+      overflow: 'auto',
+    }}
+  >
+ <Typography variant="h4" gutterBottom style={{ color: '#02a95c', }}>
+      Why Donate for This Axie?
+    </Typography>
+    <Typography variant="body1">
+    In the vibrant realm of Lunacia, where Axies thrive in harmony, a unique Axie named Rono finds himself in a heart-wrenching situation. Once cherished by his previous owner, circumstances took a turn, and Rono was left abandoned, longing for companionship and care.
 
+Rono, with his striking colors and endearing personality, now faces the challenges of the wilderness alone. His once-playful demeanor has given way to a sense of loneliness and uncertainty. However, there is hope on the horizon.
 
-function About() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+Our mission is to rescue Rono from his plight and provide him with the love and care he deserves. Urgent funds are needed to ensure Rono's well-being, covering essential expenses like medical care, nourishing meals, and a safe haven. Your generous donations will be the beacon of hope that lights up Rono's world and gives him a second chance at a joyful life.
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+By contributing to Rono's rescue, you become a hero in his story, offering him a brighter future and a community that cares. Join us in this journey of compassion and make a difference in the life of a deserving Axie. Together, we can rewrite Rono's tale from one of abandonment to a story of resilience, love, and the power of a united community.
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+Your donation, no matter the size, will be a crucial step in ensuring Rono's recovery and bringing warmth back into his eyes. Let's come together to turn the page on Rono's past and create a new chapter filled with hope, kindness, and the shared joy of giving.
+    </Typography>
+  </Box>
+);
 
-  return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >        About Page
-          </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
-}
-export default About;
+export default BriefDescriptionBox;

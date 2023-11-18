@@ -4,8 +4,10 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { CardMedia, Typography, Modal, Input, TextField } from "@mui/material";
-import ResponsiveAppBar from "./NavigationBar";
+import { CardMedia, Typography, Modal, TextField } from "@mui/material";
+import axieImage from "../assets/axie_1.png";
+import pixelBackground from "../assets/PixelBG3.jpg";
+import BriefDescriptionBox from "./About";
 
 export default function Home() {
   const [userWalletAddress, setUserWalletAddress] = useState(
@@ -208,7 +210,7 @@ export default function Home() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="sm"style={{ minHeight: '100vh'}}>
       <Box
         display="flex"
         flexDirection="column"
@@ -216,25 +218,48 @@ export default function Home() {
         justifyContent="center"
         minHeight="100vh"
         paddingY={4}
+        style={{
+          backgroundImage: `url(${pixelBackground})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
       >
-        <ResponsiveAppBar />
-
         <CardMedia
           component="img"
           alt="Apothe-Care Logo"
-          height="200" // Adjust the height as needed
-          image="../assets/axie_1.png" // path to your image
+          height="400" // Adjust the height as needed
+          image={axieImage}
         />
-        <Typography variant="h5" gutterBottom>
-          Total Donated Value: {totalDonationValue} WEI
+        <Typography variant="h5" gutterBottom style={{ color: 'white', fontSize: '30px' }}>
+          Total Donated Value: {totalDonationValue/1000000000000000000} Ron
         </Typography>
 
-        {Object.entries(top5Donors).map(([key, value], index) => (
-          <Typography key={index} variant="body1">
-            {key}: {value as number}
-          </Typography>
-        ))}
+        <BriefDescriptionBox />
 
+        <Box
+  style={{
+    marginTop: "50px",
+    border: "1px solid #ccc",
+    borderRadius: "10px",
+    padding: "10px",
+    width: "25%", // Change to 100% to take the full width
+    maxHeight: "200px",
+    overflowY: "auto",
+    position: "absolute", // Set position to absolute
+    top: "20px", // Adjust the top position as needed
+    right: "10px", // Set the right position to move it to the right side
+    backgroundColor: 'white', // Set the background color to white
+  }}
+>
+  <Typography variant="h4" gutterBottom style={{ color: '#01485c', fontSize: '50px' }}>
+    Top 5 Donors
+  </Typography>
+  {Object.entries(top5Donors).map(([key, value], index) => (
+    <Typography key={index} variant="body1" style={{ marginBottom: "8px" }}>
+      {key}: {value as number / 1000000000000000000} Ron
+    </Typography>
+  ))}
+</Box>
         <Button
           variant="contained"
           color="primary"
