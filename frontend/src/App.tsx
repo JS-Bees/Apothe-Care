@@ -1,7 +1,5 @@
 import React from "react";
 import Home from "./components/Home";
-import About from "./components/About";
-import TopDonor from "./components/TopDonor";
 import ResponsiveAppBar from "./components/NavigationBar";
 
 function App() {
