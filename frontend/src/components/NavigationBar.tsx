@@ -7,7 +7,6 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
 import AdbIcon from "@mui/icons-material/Adb";
 import { BrowserRouter as Router, Link } from "react-router-dom";
 
@@ -72,8 +71,7 @@ function ResponsiveAppBar() {
                 sx={{
                   display: { xs: "block", md: "none" },
                 }}
-              >
-              </Menu>
+              ></Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography

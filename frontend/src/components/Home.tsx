@@ -15,10 +15,7 @@ export default function Home() {
   );
   const [totalDonationValue, setTotalDonationValue] = useState(0);
   const [top5Donors, setTop5Donors] = useState({});
-
-  // State for the modal
   const [open, setOpen] = useState(false);
-  // State for the donation value
   const [donationAmount, setDonationAmount] = useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -28,7 +25,6 @@ export default function Home() {
   const config = {
     method: "get",
     maxBodyLength: Infinity,
-    // url: "https://saigon-testnet.roninchain.com/rpc/accounts/0x60f642408a5e661da0489081f2951d046769ca6f", // Replac
     // url: "https://api-gateway.skymavis.com/skynet-test/ronin/accounts/0x60f642408a5e661da0489081f2951d046769ca6f", // Test Net
     url: `https://api-gateway.skymavis.com/skynet/ronin/accounts/${donationAddress}`,
     headers: {
@@ -53,7 +49,7 @@ export default function Home() {
 
     const interval = setInterval(() => {
       calcTotalDonationValue();
-    }, 3000); // Poll every 3 seconds
+    }, 3000);
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
@@ -91,15 +87,12 @@ export default function Home() {
             }
           }
 
-          // Sort the dictionary by value in descending order
           const sortedArray = Object.entries(dictionary).sort(
             ([, a], [, b]) => b - a
           );
 
-          // Limit to the top 5 entries
           const top5Array = sortedArray.slice(0, 5);
 
-          // Convert the array back to a dictionary
           const top5Dictionary = Object.fromEntries(top5Array);
           setTop5Donors(top5Dictionary);
 
@@ -108,7 +101,7 @@ export default function Home() {
         .catch((error) => {
           console.log(error);
         });
-    }, 3000); // Runs every 5 seconds
+    }, 3000);
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
@@ -159,7 +152,6 @@ export default function Home() {
     if (accounts) {
       console.log(`Wallet Connected! Current address: ${accounts[0]}`);
       setUserWalletAddress(accounts[0]);
-      // Also save the new userWalletAddress in sessionStorage
       sessionStorage.setItem("userWalletAddress", accounts[0]);
     } else {
       console.log("Failed to connect to the wallet");
@@ -169,11 +161,7 @@ export default function Home() {
   const handleConnectWallet = async () => {
     if (userWalletAddress) {
       console.log("connected user wallet address", userWalletAddress);
-    }
-    // else if (userWalletAddress === undefined) {
-    //   console.log("Log in to your Ronin Account through the extension"); // make this into a modal
-    // }
-    else {
+    } else {
       connectRoninWallet();
     }
   };
@@ -188,8 +176,7 @@ export default function Home() {
           {
             to: "0x8f11877d6181484568b93b30039f5418f787c61c",
             from: userWalletAddress,
-            // value: "0xDE0B6B3A7640000", // 1000000000000000000, 1 RON
-            value: "0x" + valueInWei, // 0.00001 RON
+            value: "0x" + valueInWei,
             gas: "0x5208",
             data: "",
           },
@@ -210,7 +197,7 @@ export default function Home() {
   };
 
   return (
-    <Container maxWidth="sm"style={{ minHeight: '100vh'}}>
+    <Container maxWidth="sm" style={{ minHeight: "100vh" }}>
       <Box
         display="flex"
         flexDirection="column"
@@ -220,46 +207,58 @@ export default function Home() {
         paddingY={4}
         style={{
           backgroundImage: `url(${pixelBackground})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
         <CardMedia
           component="img"
           alt="Apothe-Care Logo"
-          height="400" // Adjust the height as needed
+          height="400"
           image={axieImage}
         />
-        <Typography variant="h5" gutterBottom style={{ color: 'white', fontSize: '30px' }}>
-          Total Donated Value: {totalDonationValue/1000000000000000000} Ron
+        <Typography
+          variant="h5"
+          gutterBottom
+          style={{ color: "white", fontSize: "30px" }}
+        >
+          Total Donated Value: {totalDonationValue / 1000000000000000000} Ron
         </Typography>
 
         <BriefDescriptionBox />
 
         <Box
-  style={{
-    marginTop: "50px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    padding: "10px",
-    width: "25%", // Change to 100% to take the full width
-    maxHeight: "200px",
-    overflowY: "auto",
-    position: "absolute", // Set position to absolute
-    top: "20px", // Adjust the top position as needed
-    right: "10px", // Set the right position to move it to the right side
-    backgroundColor: 'white', // Set the background color to white
-  }}
->
-  <Typography variant="h4" gutterBottom style={{ color: '#01485c', fontSize: '50px' }}>
-    Top 5 Donors
-  </Typography>
-  {Object.entries(top5Donors).map(([key, value], index) => (
-    <Typography key={index} variant="body1" style={{ marginBottom: "8px" }}>
-      {key}: {value as number / 1000000000000000000} Ron
-    </Typography>
-  ))}
-</Box>
+          style={{
+            marginTop: "50px",
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            padding: "10px",
+            width: "25%",
+            maxHeight: "200px",
+            overflowY: "auto",
+            position: "absolute",
+            top: "20px",
+            right: "10px",
+            backgroundColor: "white",
+          }}
+        >
+          <Typography
+            variant="h4"
+            gutterBottom
+            style={{ color: "#01485c", fontSize: "50px" }}
+          >
+            Top 5 Donors
+          </Typography>
+          {Object.entries(top5Donors).map(([key, value], index) => (
+            <Typography
+              key={index}
+              variant="body1"
+              style={{ marginBottom: "8px" }}
+            >
+              {key}: {(value as number) / 1000000000000000000} Ron
+            </Typography>
+          ))}
+        </Box>
         <Button
           variant="contained"
           color="primary"
@@ -305,16 +304,6 @@ export default function Home() {
           <Typography id="simple-modal-title" variant="h6" component="h2">
             Donation Value
           </Typography>
-          {/* <Input
-            type="number"
-            value={donationValue}
-            onChange={(event) => {
-              const value = event.target.value;
-              if (!value || value.match(/^\d*(\.\d{0,15})?$/)) {
-                setDonationValue(Number(value));
-              }
-            }}
-          /> */}
           <TextField
             label="Donation Amount"
             variant="outlined"
