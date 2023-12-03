@@ -46,11 +46,17 @@ export default function Home() {
         });
     };
 
-    calcTotalDonationValue();
+    const interval = setInterval(() => {
+      calcTotalDonationValue();
+    }, 3000);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const interval = setInterval(async () => {
       const config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -94,83 +100,11 @@ export default function Home() {
         .catch((error) => {
           console.log(error);
         });
-    };
+    }, 3000);
 
-    fetchData();
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
   }, []);
-
-  // useEffect(() => {
-  //   const calcTotalDonationValue = async () => {
-  //     return axios(config)
-  //       .then((response: { data: any }) => {
-  //         setTotalDonationValue(response.data.result.balance);
-  //         return response.data.balance;
-  //       })
-  //       .catch((error: any) => {
-  //         console.log(error);
-  //         throw error;
-  //       });
-  //   };
-
-  //   const interval = setInterval(() => {
-  //     calcTotalDonationValue();
-  //   }, 3000);
-
-  //   // Clear the interval when the component unmounts
-  //   return () => clearInterval(interval);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     const config = {
-  //       method: "get",
-  //       maxBodyLength: Infinity,
-  //       url: `https://api-gateway.skymavis.com/explorer/txs/${donationAddress}`,
-  //       headers: {
-  //         Accept: "application/json",
-  //         "X-API-Key": process.env.REACT_APP_X_API_KEY,
-  //       },
-  //     };
-
-  //     axios(config)
-  //       .then((response) => {
-  //         const data = response.data.results;
-  //         const dictionary: { [key: string]: number } = {};
-
-  //         for (let i = 0; i < data.length; i++) {
-  //           const item = data[i];
-  //           if (item.to === `${donationAddress}` && item.status === 1) {
-  //             const from = item.from;
-  //             const value = Number(item.value);
-
-  //             if (dictionary[from]) {
-  //               dictionary[from] += value;
-  //             } else {
-  //               dictionary[from] = value;
-  //             }
-  //           }
-  //         }
-
-  //         const sortedArray = Object.entries(dictionary).sort(
-  //           ([, a], [, b]) => b - a
-  //         );
-
-  //         const top5Array = sortedArray.slice(0, 5);
-
-  //         const top5Dictionary = Object.fromEntries(top5Array);
-  //         setTop5Donors(top5Dictionary);
-
-  //         console.log(top5Dictionary);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error);
-  //       });
-  //   }, 3000);
-
-  //   // Clear the interval when the component unmounts
-  //   return () => clearInterval(interval);
-  // }, []);
 
   useEffect(() => {
     const accountChangeListener = (
