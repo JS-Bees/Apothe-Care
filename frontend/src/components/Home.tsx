@@ -48,7 +48,7 @@ export default function Home() {
 
     const interval = setInterval(() => {
       calcTotalDonationValue();
-    }, 3000);
+    }, 1000);
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
@@ -100,7 +100,7 @@ export default function Home() {
         .catch((error) => {
           console.log(error);
         });
-    }, 3000);
+    }, 1000);
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
