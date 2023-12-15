@@ -16,11 +16,12 @@ export default function Home() {
   const [totalDonationValue, setTotalDonationValue] = useState(0);
   const [top5Donors, setTop5Donors] = useState({});
   const [open, setOpen] = useState(false);
+  const [openConnectedModal, setOpenConnectedModal] = useState(false);
   const [donationAmount, setDonationAmount] = useState(0);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const donationAddress = "0x8f11877d6181484568b93b30039f5418f787c61c";
+  const donationAddress = "0x046c46d672967d0e35ea9b5f726af3d4e9a2aa18";
 
   const config = {
     method: "get",
@@ -106,12 +107,17 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleCloseConnectedModal = () => {
+    setOpenConnectedModal(false);
+  };
+
   useEffect(() => {
     const accountChangeListener = (
       newAddresses: React.SetStateAction<string>[]
     ) => {
       console.log("Account is changed to: ", newAddresses[0]);
       setUserWalletAddress(newAddresses[0] as string);
+      setOpenConnectedModal(true);
       sessionStorage.setItem("userWalletAddress", newAddresses[0] as string);
     };
 
@@ -160,6 +166,7 @@ export default function Home() {
   const handleConnectWallet = async () => {
     if (userWalletAddress) {
       console.log("connected user wallet address", userWalletAddress);
+      setOpenConnectedModal(true);
     } else {
       connectRoninWallet();
     }
@@ -173,7 +180,7 @@ export default function Home() {
         method: "eth_sendTransaction",
         params: [
           {
-            to: "0x8f11877d6181484568b93b30039f5418f787c61c",
+            to: donationAddress,
             from: userWalletAddress,
             value: "0x" + valueInWei,
             gas: "0x5208",
@@ -297,17 +304,18 @@ export default function Home() {
             boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
             padding: "20px",
             width: "300px",
-            height: "300px",
+            height: "200px",
           }}
         >
           <Typography id="simple-modal-title" variant="h6" component="h2">
-            Donation Value
+            Enter Donation Value
           </Typography>
           <TextField
             label="Donation Amount"
             variant="outlined"
             fullWidth
             type="number"
+            sx={{ marginTop: 3 }}
             value={donationAmount}
             onChange={(e) => {
               const value = Number(e.target.value);
@@ -321,6 +329,52 @@ export default function Home() {
           />
           <Button onClick={addDonationAmount}>Confirm Donation Amount</Button>
           <Button onClick={handleClose}>Close</Button>
+        </Box>
+      </Modal>
+      {/* connected modal */}
+      <Modal
+        open={openConnectedModal}
+        onClose={handleCloseConnectedModal}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+        style={{
+          position: "fixed",
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          style={{
+            backgroundColor: "white",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            padding: "20px",
+            width: "400px",
+            height: "150px",
+          }}
+        >
+          <Typography
+            id="simple-modal-title"
+            variant="h6"
+            component="h2"
+            align="center"
+          >
+            Connected to User Wallet:
+          </Typography>
+          <Typography
+            variant="body1"
+            align="center"
+            style={{ marginTop: "15px" }}
+          >
+            {userWalletAddress}
+          </Typography>
+          <Button
+            onClick={handleCloseConnectedModal}
+            style={{ display: "block", paddingTop: "40px", margin: "auto" }}
+          >
+            Close
+          </Button>
         </Box>
       </Modal>
     </Container>
